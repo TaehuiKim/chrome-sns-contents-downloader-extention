@@ -7,11 +7,12 @@
 (function () {
   "use strict";
 
+  const DEBUG = false; // set true to log intercepted variants
   const API_HINT = /(\/i\/api\/|graphql|\/2\/)/i;
 
   function post(items) {
     if (!items.length) return;
-    console.log("[MediaDL/net] posting variants:", items.length);
+    if (DEBUG) console.log("[MediaDL/net] posting variants:", items.length);
     window.postMessage({ __mediadl: true, type: "variants", items }, "*");
   }
 

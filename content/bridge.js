@@ -10,7 +10,7 @@ globalThis.MediaDL = globalThis.MediaDL || {};
 (function (MediaDL) {
   "use strict";
 
-  MediaDL.debug = true; // set false to silence diagnostics
+  MediaDL.debug = false; // set true to re-enable diagnostic logging
 
   function log(...args) {
     if (MediaDL.debug) console.log("[MediaDL]", ...args);
