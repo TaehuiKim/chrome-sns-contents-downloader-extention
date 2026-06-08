@@ -11,7 +11,12 @@ globalThis.MediaDL = globalThis.MediaDL || {};
     if (hostname.endsWith("x.com") || hostname.endsWith("twitter.com")) {
       return MediaDL.twitter;
     }
-    // Instagram / Threads added in later phases.
+    if (hostname.endsWith("instagram.com")) {
+      return MediaDL.instagram;
+    }
+    if (hostname.endsWith("threads.net") || hostname.endsWith("threads.com")) {
+      return MediaDL.threads;
+    }
     return null;
   }
 

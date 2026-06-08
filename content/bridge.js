@@ -17,10 +17,11 @@ globalThis.MediaDL = globalThis.MediaDL || {};
   }
   MediaDL.log = log;
 
-  // tweetId -> { mp4, m3u8, bitrate }
-  MediaDL.videoByTweet = MediaDL.videoByTweet || new Map();
-  // mediaId -> { mp4, m3u8, bitrate }
-  MediaDL.videoByMedia = MediaDL.videoByMedia || new Map();
+  // X video registry
+  MediaDL.videoByTweet = MediaDL.videoByTweet || new Map(); // tweetId -> { mp4, m3u8, bitrate }
+  MediaDL.videoByMedia = MediaDL.videoByMedia || new Map(); // mediaId -> { mp4, m3u8, bitrate }
+  // Instagram / Threads registry: shortcode -> { username, items:[{type,url}] }
+  MediaDL.mediaByCode = MediaDL.mediaByCode || new Map();
 
   function recordVariant(entry) {
     if (!entry || (!entry.mp4 && !entry.m3u8)) return;
@@ -38,16 +39,31 @@ globalThis.MediaDL = globalThis.MediaDL || {};
   window.addEventListener("message", (event) => {
     if (event.source !== window) return;
     const data = event.data;
-    if (!data || data.__mediadl !== true || data.type !== "variants") return;
-    (data.items || []).forEach(recordVariant);
-    log(
-      "captured variants:",
-      data.items.length,
-      "| total tweets:",
-      MediaDL.videoByTweet.size,
-      "| media:",
-      MediaDL.videoByMedia.size
-    );
+    if (!data || data.__mediadl !== true) return;
+
+    if (data.type === "variants") {
+      (data.items || []).forEach(recordVariant);
+      log(
+        "captured X variants:",
+        data.items.length,
+        "| tweets:",
+        MediaDL.videoByTweet.size,
+        "| media:",
+        MediaDL.videoByMedia.size
+      );
+    } else if (data.type === "meta-media") {
+      (data.posts || []).forEach((p) => {
+        if (p && p.code && p.items && p.items.length) {
+          MediaDL.mediaByCode.set(p.code, { username: p.username, items: p.items });
+        }
+      });
+      log(
+        "captured meta posts:",
+        (data.posts || []).length,
+        "| total codes:",
+        MediaDL.mediaByCode.size
+      );
+    }
   });
 
   log("bridge ready (document_start)");

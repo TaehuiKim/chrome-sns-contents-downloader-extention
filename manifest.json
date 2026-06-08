@@ -1,10 +1,16 @@
 {
   "manifest_version": 3,
   "name": "SNS Media Downloader",
-  "version": "0.1.0",
-  "description": "Download images and videos from X (Twitter), Instagram, and Threads. Phase 1: X images at original quality.",
+  "version": "0.2.0",
+  "description": "Download images and videos from X (Twitter), Instagram, and Threads.",
   "permissions": ["downloads"],
-  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "host_permissions": [
+    "https://x.com/*",
+    "https://twitter.com/*",
+    "https://www.instagram.com/*",
+    "https://www.threads.net/*",
+    "https://www.threads.com/*"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -17,15 +23,40 @@
       "world": "MAIN"
     },
     {
-      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "matches": [
+        "https://www.instagram.com/*",
+        "https://www.threads.net/*",
+        "https://www.threads.com/*"
+      ],
+      "js": ["content/platforms/meta_net.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://www.instagram.com/*",
+        "https://www.threads.net/*",
+        "https://www.threads.com/*"
+      ],
       "js": ["content/bridge.js"],
       "run_at": "document_start"
     },
     {
-      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*",
+        "https://www.instagram.com/*",
+        "https://www.threads.net/*",
+        "https://www.threads.com/*"
+      ],
       "js": [
         "lib/download.js",
         "content/platforms/twitter.js",
+        "content/platforms/meta_common.js",
+        "content/platforms/instagram.js",
+        "content/platforms/threads.js",
         "content/injector.js",
         "content/index.js"
       ],
